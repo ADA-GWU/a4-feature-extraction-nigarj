@@ -1,0 +1,1 @@
+Average match distance (top 50): 16.18
