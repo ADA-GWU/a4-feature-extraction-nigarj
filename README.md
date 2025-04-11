@@ -58,7 +58,7 @@ Applies classical edge detection techniques (Canny, Sobel, Laplacian) to graysca
 - Outputs edge maps under `images/edges/`.
 
 ### 2. `corner_detection.py`
-Implements Harris and Shi-Tomasi corner detectors.
+Implements Harris corner detectors.
 - Detected corners are overlaid on images and saved in `images/corners/`.
 
 ### 3. `line_and_circle_detection.py`
