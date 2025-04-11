@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 
 # --- Input/Output Setup ---
-INPUT_PATH = 'images/original/jasmine.jpeg'
+INPUT_PATH = 'images/original/bike.jpeg'
 
 
 

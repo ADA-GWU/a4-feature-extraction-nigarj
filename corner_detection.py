@@ -3,52 +3,42 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-# --- Input/Output Setup ---
-INPUT_PATH = 'images/original/jasmine.jpeg'
-
-
-
-# --- Load Image and Convert to Grayscale ---
+# --- Input Setup ---
+INPUT_PATH = 'images/original/dog.jpg'
 img = cv2.imread(INPUT_PATH)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-# --- 1. Gaussian Blur (Optional Denoising) ---
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
-# --- 5. Harris Corner Detection ---
+# --- Harris Corner Parameters ---
+block_size = 2
+k_values = [0.2]  # You can add more `k` values if needed
+ksizes = [5, 15, 25]
 
-# Parameters
-block_size = 2      # It is the size of neighbourhood considered for corner detection
-ksize = 5           # Aperture parameter for the Sobel operator.
-k = 0.2      # Harris detector free parameter
+# --- Harris Corner Detection and Saving ---
+output_base = 'images/harris_corners/'
 
-# Convert image to float32 for Harris
-gray_float = np.float32(blurred)
+fig, axes = plt.subplots(1, len(ksizes), figsize=(18, 6))
 
-# Apply Harris Corner Detection
-harris_corners = cv2.cornerHarris(gray_float, block_size, ksize, k)
+for i, ksize in enumerate(ksizes):
+    for k in k_values:
+        # Convert image to float32 for Harris
+        gray_float = np.float32(blurred)
+        harris_corners = cv2.cornerHarris(gray_float, block_size, ksize, k)
+        harris_corners = cv2.dilate(harris_corners, None)
 
-# Dilate to mark the corners more clearly
-harris_corners = cv2.dilate(harris_corners, None)
+        # Copy and mark corners
+        corner_img = img.copy()
+        corner_img[harris_corners > 0.01 * harris_corners.max()] = [0, 255, 0]  # black corners
 
-# Threshold and mark corners in red
-corner_img = img.copy()
-corner_img[harris_corners > 0.01 * harris_corners.max()] = [0, 0, 255]  # Red corners
+        # Save result
+        output_path = os.path.join(output_base, f'ksize_{ksize}')
+        os.makedirs(output_path, exist_ok=True)
+        cv2.imwrite(os.path.join(output_path, 'harris_result.jpg'), corner_img)
 
-# Save the result
-output_path = 'images/harris_corners/'
-os.makedirs(output_path, exist_ok=True)
-cv2.imwrite(output_path + 'harris_result.jpg', corner_img)
+        # Display
+        axes[i].imshow(cv2.cvtColor(corner_img, cv2.COLOR_BGR2RGB))
+        axes[i].set_title(f'Harris Corners\nksize={ksize}')
+        axes[i].axis('off')
 
-# --- Optional Visualization ---
-def show(title, img):
-    plt.figure(figsize=(6, 6))
-    plt.imshow(img, cmap='gray')
-    plt.title(title)
-    plt.axis('off')
-    plt.show()
-
-
-
-# Optional display
-show("Harris Corners", corner_img)
+plt.tight_layout()
+plt.show()

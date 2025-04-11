@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 
 # --- Input/Output Setup ---
-INPUT_PATH = 'images/original/bik.jpeg'
+INPUT_PATH = 'images/original/apple.jpeg'
 OUTPUT_DIR = {
     "sobel": "images/edge_sobel/",
     "canny": "images/edge_canny/",
